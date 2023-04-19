@@ -6,6 +6,9 @@
   "author": "Shubham Lad",
   "license": "MIT",
   "private": false,
+  "engines": {
+    "node" : ">=16.0.0" 
+  },
   "dependencies": {
     "@iamtraction/google-translate": "^2.0.1",
     "axios": "^0.21.1",
