@@ -1,12 +1,13 @@
 const { default: axios } = require("axios");
 const express = require("express");
+const { translate } = require("@vitalets/google-translate-api");
 const { generateEndpoint } = require("./utils/generateEndpoint");
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
 app.get("/shorts", async (req, res) => {
-  let { category, limit } = req.query;
+  let { category, limit, lang } = req.query;
   let articles = [];
   if (!category) {
     category = "all_news";
@@ -31,10 +32,47 @@ app.get("/shorts", async (req, res) => {
         byline: info.byline_1[0].text,
       });
     });
+
+    if (lang && lang !== "en") {
+      for (let i = 0; i < articles.length; i++) {
+        try {
+          const { text: content } = await translate(articles[i].content, {
+            to: lang,
+          });
+          const { text: title } = await translate(articles[i].title, {
+            to: lang,
+          });
+          articles[i].content = content;
+          articles[i].title = title;
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+
     return res.json({ success: true, articles });
   } catch (error) {
     return res.json({ success: false, message: "Something goes wrong" });
   }
+});
+
+app.get("/languages", (req, res) => {
+  return res.json({
+    laguages: [
+      { name: "Marathi", code: "mr" },
+      { name: "Hindi", code: "hi" },
+      { name: "Kannada", code: "kn" },
+      { name: "Tamil", code: "ta" },
+      { name: "Telugu", code: "te" },
+      { name: "Malayalam", code: "ml" },
+      { name: "English", code: "en" },
+      { name: "French", code: "fr" },
+      { name: "German", code: "de" },
+      { name: "Gujarati", code: "gu" },
+      { name: "Japanese", code: "ja" },
+      { name: "Russian", code: "ru" },
+    ],
+  });
 });
 
 app.listen(PORT, () => console.log("Gator app listening on port 3000!"));
