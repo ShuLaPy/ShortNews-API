@@ -1,6 +1,6 @@
 const { default: axios } = require("axios");
 const express = require("express");
-const { translate } = require("@vitalets/google-translate-api");
+const translate = require("@iamtraction/google-translate");
 const { generateEndpoint } = require("./utils/generateEndpoint");
 const app = express();
 
@@ -46,6 +46,7 @@ app.get("/shorts", async (req, res) => {
           articles[i].title = title;
         } catch (err) {
           console.log(err);
+          break;
         }
       }
     }
@@ -65,10 +66,10 @@ app.get("/languages", (req, res) => {
       { name: "Tamil", code: "ta" },
       { name: "Telugu", code: "te" },
       { name: "Malayalam", code: "ml" },
+      { name: "Gujarati", code: "gu" },
       { name: "English", code: "en" },
       { name: "French", code: "fr" },
       { name: "German", code: "de" },
-      { name: "Gujarati", code: "gu" },
       { name: "Japanese", code: "ja" },
       { name: "Russian", code: "ru" },
     ],
